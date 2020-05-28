@@ -1,36 +1,33 @@
 import 'phaser';
 
 export default class Tetris extends Phaser.Scene {
-    constructor () {
+    constructor() {
         super('tetris');
     }
 
-    preload () {
+    preload() {
         // Load all assets
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
+        // Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
+        this.load.image('background', 'assets/Background.png');
+        this.load.image('block1', 'assets/Block 1.png');
+        this.load.image('block2', 'assets/Block 2.png');
+        this.load.image('block3', 'assets/Block 3.png');
+        this.load.image('block4', 'assets/Block 4.png');
+        this.load.image('block5', 'assets/Block 5.png');
+        this.load.image('block6', 'assets/Block 6.png');
+        this.load.image('block7', 'assets/Block 7.png');
     }
 
-    create () {
+    create() {
         // Start the game scene
-        this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
-
-        this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
-
-        this.add.image(400, 300, 'libs');
-
-        const logo = this.add.image(400, 70, 'logo');
-
-        this.tweens.add({
-            targets: logo,
-            y: 350,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+        this.add.image(150, 275, 'background');
+        this.add.image(50, 50, 'block1');
+        this.add.image(50, 100, 'block2');
+        this.add.image(50, 150, 'block3');
+        this.add.image(50, 200, 'block4');
+        this.add.image(50, 250, 'block5');
+        this.add.image(50, 300, 'block6');
+        this.add.image(50, 350, 'block7');
     }
 
     update() {
@@ -41,8 +38,8 @@ export default class Tetris extends Phaser.Scene {
 const config = {
     type: Phaser.AUTO,
     backgroundColor: '#125555',
-    width: 800,
-    height: 600,
+    width: 300,
+    height: 550,
     scene: Tetris
 };
 
