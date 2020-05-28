@@ -1,46 +1,77 @@
 import 'phaser';
 
 export default class Tetris extends Phaser.Scene {
-    constructor() {
-        super('tetris');
-    }
+	cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+	border: Phaser.Physics.Arcade.StaticGroup;
+	block: Phaser.Physics.Arcade.Sprite;
 
-    preload() {
-        // Load all assets
-        // Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
-        this.load.image('background', 'assets/Background.png');
-        this.load.image('block1', 'assets/Block 1.png');
-        this.load.image('block2', 'assets/Block 2.png');
-        this.load.image('block3', 'assets/Block 3.png');
-        this.load.image('block4', 'assets/Block 4.png');
-        this.load.image('block5', 'assets/Block 5.png');
-        this.load.image('block6', 'assets/Block 6.png');
-        this.load.image('block7', 'assets/Block 7.png');
-    }
+	constructor() {
+		super('tetris');
+	}
 
-    create() {
-        // Start the game scene
-        this.add.image(150, 275, 'background');
-        this.add.image(50, 50, 'block1');
-        this.add.image(50, 100, 'block2');
-        this.add.image(50, 150, 'block3');
-        this.add.image(50, 200, 'block4');
-        this.add.image(50, 250, 'block5');
-        this.add.image(50, 300, 'block6');
-        this.add.image(50, 350, 'block7');
-    }
+	// Constant class variables
+	get borderKey(): string {
+		return 'border';
+	}
+	get blocksKeys(): string[] {
+		return ['block1', 'block2', 'block3', 'block4', 'block5', 'block6', 'block7'];
+	}
 
-    update() {
-        // Check properties per frame
-    }
+	randBlock(blocks: string[]): string {
+		// Randomly select a block from the array of tetris blocks
+		return blocks[Math.floor(Math.random() * blocks.length)]
+	}
+
+	preload() {
+		// Load all assets
+		// Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
+		this.load.image(this.borderKey, 'assets/Border.png');
+		this.blocksKeys.forEach(
+			(block, index) => this.load.image(block, `assets/Block ${index + 1}.png`)
+		);
+	}
+
+	create() {
+		// Start the game scene
+		this.cursors = this.input.keyboard.createCursorKeys();
+
+		this.border = this.physics.add.staticGroup();
+		this.border.create(150, 275, this.borderKey);
+		this.block = this.physics.add.sprite(150, 50, this.randBlock(this.blocksKeys));
+
+		this.physics.add.collider(this.border, this.block);
+	}
+
+	update() {
+		// Check properties per frame
+		if (this.cursors.left.isDown) {
+			this.block.setVelocityX(-160);
+		} else if (this.cursors.right.isDown) {
+			this.block.setVelocityX(160);
+		} else if (this.cursors.up.isDown) {
+			this.block.setVelocityY(-330);
+		} else if (this.cursors.down.isDown) {
+			this.block.setVelocityY(330);
+		} else {
+			this.block.setVelocityX(0);
+			this.block.setVelocityY(0);
+		}
+	}
 }
 
-const config = {
-    type: Phaser.AUTO,
-    backgroundColor: '#125555',
-    width: 300,
-    height: 550,
-    scene: Tetris
+const config: Phaser.Types.Core.GameConfig = {
+	type: Phaser.AUTO,
+	backgroundColor: '#000',
+	width: 300,
+	height: 550,
+	physics: {
+		default: 'arcade',
+		arcade: {
+			gravity: { y: 300 },
+			debug: false
+		}
+	},
+	scene: Tetris
 };
 
 const game = new Phaser.Game(config);
