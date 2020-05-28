@@ -10,10 +10,10 @@ export default class Tetris extends Phaser.Scene {
 	}
 
 	// Constant class variables
-	get borderKey(): string {
-		return 'border';
+	get borderKeys(): string[] {
+		return ['borderSide', 'borderBottom'];
 	}
-	get blocksKeys(): string[] {
+	get blockKeys(): string[] {
 		return ['block1', 'block2', 'block3', 'block4', 'block5', 'block6', 'block7'];
 	}
 
@@ -25,8 +25,9 @@ export default class Tetris extends Phaser.Scene {
 	preload() {
 		// Load all assets
 		// Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
-		this.load.image(this.borderKey, 'assets/Border.png');
-		this.blocksKeys.forEach(
+		this.load.image(this.borderKeys[0], 'assets/Border Side.png');
+		this.load.image(this.borderKeys[1], 'assets/Border Bottom.png');
+		this.blockKeys.forEach(
 			(block, index) => this.load.image(block, `assets/Block ${index + 1}.png`)
 		);
 	}
@@ -36,8 +37,10 @@ export default class Tetris extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.border = this.physics.add.staticGroup();
-		this.border.create(150, 275, this.borderKey);
-		this.block = this.physics.add.sprite(150, 50, this.randBlock(this.blocksKeys));
+		this.border.create(12.5, 275, this.borderKeys[0]);
+		this.border.create(287.5, 275, this.borderKeys[0]);
+		this.border.create(150, 537.5, this.borderKeys[1]);
+		this.block = this.physics.add.sprite(150, 50, this.randBlock(this.blockKeys));
 
 		this.physics.add.collider(this.border, this.block);
 	}
