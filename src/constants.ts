@@ -9,23 +9,27 @@ export default class Constants {
 
 	static get blockData(): any {
 		/* Information about each tetris block
-		 * startX = start x point, sideDelta = px from center to edge
+		 * startX: start x point, startY: start y point,
+		 * sideDelta: px from center to side edge, bottomDelta: px from center to bottom edge
 		 */
 		return {
 			normal: {
 				startX: 137.5,
 				startY: 25,
-				sideDelta: 37.5
+				sideDelta: 37.5,
+				bottomDelta: 25
 			},
 			square: {
 				startX: 150,
 				startY: 25,
-				sideDelta: 25
+				sideDelta: 25,
+				bottomDelta: 25
 			},
 			wide: {
 				startX: 150,
 				startY: 12.5,
-				sideDelta: 50
+				sideDelta: 50,
+				bottomDelta: 12.5
 			}
 		};
 	}
