@@ -1,4 +1,5 @@
 export default class Constants {
+	// Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
 	static get width(): number {
 		return 300; // width of canvas
 	}

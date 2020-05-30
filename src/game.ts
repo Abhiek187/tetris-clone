@@ -16,6 +16,8 @@ export default class Tetris extends Phaser.Scene {
 	holdingSpace: boolean = false;
 	fallDelta: number = 1000; // ms before falling to the next row
 	fallTimer: number = 0;
+	score: number = 0;
+	scoreText: Phaser.GameObjects.Text;
 
 	constructor() {
 		super('tetris');
@@ -34,7 +36,6 @@ export default class Tetris extends Phaser.Scene {
 
 	preload() {
 		// Load all assets
-		// Tetris board is 12x22 tiles, where each tile is 25 px, so width = 300 px & height = 550 px
 		this.load.image(this.borderKeys[0], 'assets/Border Side.png');
 		this.load.image(this.borderKeys[1], 'assets/Border Bottom.png');
 		this.blockKeys.forEach(
@@ -64,6 +65,16 @@ export default class Tetris extends Phaser.Scene {
 		this.physics.add.collider(this.blocks, this.blocks);*/
 
 		this.createNewBlock(this.shapes);
+
+		const style: Phaser.Types.GameObjects.Text.TextStyle = {
+			fontFamily: 'Verdana',
+			fontSize: '3em',
+			color: 'yellow',
+			stroke: 'purple',
+			strokeThickness: 1,
+			align: 'center'
+		};
+		this.scoreText = this.add.text(Constants.width * 0.25, 10, `Score: ${this.score}`, style);
 	}
 
 	update(time: number, delta: number) {
@@ -110,6 +121,8 @@ export default class Tetris extends Phaser.Scene {
 
 		// Check fall timer
 		if (bounds.bottom >= 525) {
+			this.score += 10;
+			this.scoreText.setText(`Score: ${this.score}`);
 			this.createNewBlock(this.shapes);
 			this.fallTimer = 0;
 		} else if (this.fallTimer >= this.fallDelta) {
