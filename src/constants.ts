@@ -9,7 +9,9 @@ export default class Constants {
 	}
 
 	static get startIndices(): number[][][] {
-		// Start point for each block in terms of the 21x10 grid, top to bottom, left to right
+		/* Start point for each block in terms of the 21x10 grid, top to bottom, left to right
+		 * (index 0 = y, index 1 = x)
+		 */
 		return [
 			[[0, 4], [0, 5], [1, 3], [1, 4]],
 			[[0, 5], [1, 3], [1, 4], [1, 5]],

@@ -1,4 +1,5 @@
 import 'phaser';
+import Constants from './constants';
 
 export default class Block {
 	// Class for the tetris block
@@ -7,6 +8,7 @@ export default class Block {
 	startX: number;
 	startY: number;
 	image: Phaser.Physics.Matter.Image;
+	gridLoc: number[][]; // 4x2 array of each block location in the grid
 
 	constructor(scene: any) {
 		this.str = Phaser.Math.RND.pick(scene.blockKeys);
@@ -24,6 +26,9 @@ export default class Block {
 			this.startX = 137.5;
 			this.startY = 25;
 		}
+
+		const index: number = parseInt(this.str.charAt(this.str.length - 1)) - 1;
+		this.gridLoc = Constants.startIndices[index];
 
 		this.image = scene.matter.add.image(
 			this.startX, this.startY, this.str, null, scene.shapes[this.str]

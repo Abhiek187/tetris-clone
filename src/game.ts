@@ -18,7 +18,6 @@ export default class Tetris extends Phaser.Scene {
 	score: number = 0;
 	scoreText: Phaser.GameObjects.Text;
 	occupied: boolean[][] = Array(21).fill(Array(10).fill(false)); // 21x10 array of block space
-	location: number[][] = Array(4).fill(Array(2).fill(0)); // 4x2 array where the current block is
 
 	constructor() {
 		super('tetris');
@@ -77,9 +76,19 @@ export default class Tetris extends Phaser.Scene {
 		// Only register pressing down button, not holding it down
 		if (this.cursors.left.isDown && !this.holdingLeft && bounds.left > 25) {
 			this.currentBlockImg.x -= 25;
+
+			for (const pos of this.currentBlock.gridLoc) {
+				pos[1]--;
+			}
+
 			this.holdingLeft = true;
 		} else if (this.cursors.right.isDown && !this.holdingRight && bounds.right < 275) {
 			this.currentBlockImg.x += 25;
+
+			for (const pos of this.currentBlock.gridLoc) {
+				pos[1]++;
+			}
+
 			this.holdingRight = true;
 		} else if (this.cursors.up.isDown && !this.holdingUp) {
 			// Hard drop (go to the bottom immediately)
@@ -114,6 +123,11 @@ export default class Tetris extends Phaser.Scene {
 
 		// Check fall timer
 		if (bounds.bottom >= 525) {
+			// Mark cells where blocks are as occupied
+			for (const pos of this.currentBlock.gridLoc) {
+				this.occupied[pos[0]][pos[1]] = true;
+			}
+
 			this.score += 10;
 			this.scoreText.setText(`Score: ${this.score}`);
 			this.currentBlock = new Block(this);
@@ -122,6 +136,11 @@ export default class Tetris extends Phaser.Scene {
 		} else if (this.fallTimer >= this.fallDelta) {
 			this.currentBlockImg.y += 25;
 			this.fallTimer = 0;
+
+			// Update y grid locations of each block
+			for (const pos of this.currentBlock.gridLoc) {
+				pos[0]++;
+			}
 		} else {
 			this.fallTimer += delta;
 		}
