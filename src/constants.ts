@@ -8,23 +8,16 @@ export default class Constants {
 		return 550; // height of canvas
 	}
 
-	static get blockData(): any {
-		/* Information about each tetris block
-		 * startX: start x point, startY: start y point
-		 */
-		return {
-			normal: {
-				startX: 137.5,
-				startY: 25
-			},
-			square: {
-				startX: 150,
-				startY: 25
-			},
-			wide: {
-				startX: 150,
-				startY: 12.5
-			}
-		};
+	static get startIndices(): number[][][] {
+		// Start point for each block in terms of the 21x10 grid, top to bottom, left to right
+		return [
+			[[0, 4], [0, 5], [1, 3], [1, 4]],
+			[[0, 5], [1, 3], [1, 4], [1, 5]],
+			[[0, 3], [1, 3], [1, 4], [1, 5]],
+			[[0, 4], [1, 3], [1, 4], [1, 5]],
+			[[0, 4], [0, 5], [1, 4], [1, 5]],
+			[[0, 3], [0, 4], [1, 4], [1, 5]],
+			[[0, 3], [0, 4], [0, 5], [0, 6]]
+		];
 	}
 }
