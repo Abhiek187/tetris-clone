@@ -17,7 +17,8 @@ export default class Tetris extends Phaser.Scene {
 	fallTimer: number = 0;
 	score: number = 0;
 	scoreText: Phaser.GameObjects.Text;
-	occupied: boolean[][] = Array(21).fill(Array(10).fill(false)); // 21x10 array of block space
+	// 21x10 array of block space (make each array its own copy, not a common reference)
+	occupied: boolean[][] = Array.from({length: 21}, e => Array(10).fill(false));
 
 	constructor() {
 		super('tetris');
@@ -75,21 +76,9 @@ export default class Tetris extends Phaser.Scene {
 
 		// Only register pressing down button, not holding it down
 		if (this.cursors.left.isDown && !this.holdingLeft && bounds.left > 25) {
-			this.currentBlockImg.x -= 25;
-
-			for (const pos of this.currentBlock.gridLoc) {
-				pos[1]--;
-			}
-
-			this.holdingLeft = true;
+			this.moveLeft(); // made as a function in case we can't move left
 		} else if (this.cursors.right.isDown && !this.holdingRight && bounds.right < 275) {
-			this.currentBlockImg.x += 25;
-
-			for (const pos of this.currentBlock.gridLoc) {
-				pos[1]++;
-			}
-
-			this.holdingRight = true;
+			this.moveRight();
 		} else if (this.cursors.up.isDown && !this.holdingUp) {
 			// Hard drop (go to the bottom immediately)
 			this.currentBlockImg.y = 525 - bounds.height / 2;
@@ -123,26 +112,116 @@ export default class Tetris extends Phaser.Scene {
 
 		// Check fall timer
 		if (bounds.bottom >= 525) {
-			// Mark cells where blocks are as occupied
-			for (const pos of this.currentBlock.gridLoc) {
-				this.occupied[pos[0]][pos[1]] = true;
-			}
-
-			this.score += 10;
-			this.scoreText.setText(`Score: ${this.score}`);
-			this.currentBlock = new Block(this);
-			this.currentBlockImg = this.currentBlock.image;
-			this.fallTimer = 0;
+			this.stopBlock();
 		} else if (this.fallTimer >= this.fallDelta) {
-			this.currentBlockImg.y += 25;
-			this.fallTimer = 0;
-
-			// Update y grid locations of each block
-			for (const pos of this.currentBlock.gridLoc) {
-				pos[0]++;
-			}
+			this.moveDown();
 		} else {
 			this.fallTimer += delta;
+		}
+	}
+
+	moveLeft() {
+		// Get the leftmost block(s) (the one with the smallest x pos)
+		let leftmostX: number = this.occupied[0].length;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			if (pos[1] < leftmostX) {
+				leftmostX = pos[1];
+			}
+		}
+
+		const leftBlocks: number[][] = this.currentBlock.gridLoc.filter(
+			pos => pos[1] === leftmostX
+		);
+
+		// Check if there's a block in the way of the leftmost block(s)
+		for (const pos of leftBlocks) {
+			if (this.occupied[pos[0]][pos[1] - 1]) {
+				return;
+			}
+		}
+
+		// Then update the entire block's position
+		this.currentBlockImg.x -= 25;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			pos[1]--;
+		}
+
+		this.holdingLeft = true;
+	}
+
+	moveRight() {
+		// Get the rightmost block(s) (the one with the largest x pos)
+		let rightMostX: number = 0;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			if (pos[1] > rightMostX) {
+				rightMostX = pos[1];
+			}
+		}
+
+		const rightBlocks: number[][] = this.currentBlock.gridLoc.filter(
+			pos => pos[1] === rightMostX
+		);
+
+		// Check if there's a block in the way of the rightmost block(s)
+		for (const pos of rightBlocks) {
+			if (this.occupied[pos[0]][pos[1] + 1]) {
+				return;
+			}
+		}
+
+		// Then update the entire block's position
+		this.currentBlockImg.x += 25;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			pos[1]++;
+		}
+
+		this.holdingRight = true;
+	}
+
+	stopBlock() {
+		// Mark cells where blocks are as occupied
+		for (const pos of this.currentBlock.gridLoc) {
+			this.occupied[pos[0]][pos[1]] = true;
+		}
+
+		this.score += 10;
+		this.scoreText.setText(`Score: ${this.score}`);
+		this.currentBlock = new Block(this);
+		this.currentBlockImg = this.currentBlock.image;
+		this.fallTimer = 0;
+	}
+
+	moveDown() {
+		// Stop the block if there's another block below us (check max y's)
+		let highestY: number = 0;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			if (pos[0] > highestY) {
+				highestY = pos[0];
+			}
+		}
+
+		const downBlocks: number[][] = this.currentBlock.gridLoc.filter(
+			pos => pos[0] === highestY
+		);
+
+		for (const pos of downBlocks) {
+			if (this.occupied[pos[0] + 1][pos[1]]) {
+				this.stopBlock();
+				return;
+			}
+		}
+
+		// Update y grid locations of each block
+		this.currentBlockImg.y += 25;
+		this.fallTimer = 0;
+
+		for (const pos of this.currentBlock.gridLoc) {
+			pos[0]++;
 		}
 	}
 }
