@@ -9,8 +9,10 @@ export default class Block {
 	startY: number;
 	image: Phaser.Physics.Matter.Image;
 	gridLoc: number[][]; // 4x2 array of each block location in the grid
+	static count: number = 0;
 
 	constructor(scene: any) {
+		Block.count++;
 		this.str = Phaser.Math.RND.pick(scene.blockKeys);
 
 		if (this.str === 'block5') {
