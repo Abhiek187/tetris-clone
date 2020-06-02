@@ -1,6 +1,5 @@
 import 'phaser';
 import Constants from './constants';
-import Formulas from './formulas';
 import Block from './block';
 
 export default class Tetris extends Phaser.Scene {
