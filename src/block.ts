@@ -4,7 +4,6 @@ import Constants from './constants';
 export default class Block {
 	// Class for the tetris block
 	str: string;
-	type: string;
 	startX: number;
 	startY: number;
 	image: Phaser.Physics.Matter.Image;
@@ -17,15 +16,12 @@ export default class Block {
 		this.str = Phaser.Math.RND.pick(scene.blockKeys);
 
 		if (this.str === 'block5') {
-			this.type = 'square';
 			this.startX = 150;
 			this.startY = 25;
 		} else if (this.str === 'block7') {
-			this.type = 'wide';
 			this.startX = 150;
 			this.startY = 12.5;
 		} else {
-			this.type = 'normal';
 			this.startX = 137.5;
 			this.startY = 25;
 		}
