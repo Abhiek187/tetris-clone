@@ -2,7 +2,7 @@
 
 This quick-start project template combines Phaser 3 with [TypeScript](https://www.typescriptlang.org/) and uses [Rollup](https://rollupjs.org) for bundling.
 
-![tetris screen](tetris.png)
+<img src="tetris.png" alt="tetris board" width="200"/>
 
 ## Requirements
 
