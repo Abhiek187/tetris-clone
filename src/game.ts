@@ -4,7 +4,7 @@ import Block from './block';
 
 export default class Tetris extends Phaser.Scene {
 	cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-	shapes: object;
+	shapes: Record<string, any>;
 	currentBlock: Block;
 	currentBlockImg: Phaser.Physics.Matter.Image;
 	holdingLeft: boolean = false;
@@ -49,14 +49,15 @@ export default class Tetris extends Phaser.Scene {
 
 	create() {
 		// Start the game scene
+		if (this.input.keyboard === null) return;
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.shapes = this.cache.json.get(this.shapesKey);
 		this.matter.world.setBounds(0, 0, Constants.width, Constants.height);
 
-		this.matter.add.image(12.5, 275, this.borderKeys[0], null, this.shapes["Border Side"]);
-		this.matter.add.image(287.5, 275, this.borderKeys[0], null, this.shapes["Border Side"]);
-		this.matter.add.image(150, 537.5, this.borderKeys[1], null, this.shapes["Border Bottom"]);
+		this.matter.add.image(12.5, 275, this.borderKeys[0], undefined, this.shapes["Border Side"]);
+		this.matter.add.image(287.5, 275, this.borderKeys[0], undefined, this.shapes["Border Side"]);
+		this.matter.add.image(150, 537.5, this.borderKeys[1], undefined, this.shapes["Border Bottom"]);
 
 		this.currentBlock = new Block(this);
 		this.currentBlockImg = this.currentBlock.image;

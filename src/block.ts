@@ -51,12 +51,12 @@ export default class Block {
 		}
 
 		this.gridLoc.forEach((pos, index) => {
-			const delta: number[] = Constants.turnDeltas[this.str][this.rotation][index];
+			const delta: number[] = (Constants.turnDeltas as Record<string, number[][][]>)[this.str][this.rotation][index];
 			pos[0] += delta[0];
 			pos[1] += delta[1];
 		});
 
-		this.rotation = (this.rotation + 1) % Constants.turnDeltas[this.str].length;
+		this.rotation = (this.rotation + 1) % (Constants.turnDeltas as Record<string, number[][][]>)[this.str].length;
 
 		// Move block again if it's out of bounds
 		const bounds: Phaser.Geom.Rectangle = this.image.getBounds();

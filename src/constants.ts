@@ -23,7 +23,7 @@ export default class Constants {
 		];
 	}
 
-	static get turnDeltas(): object {
+	static get turnDeltas(): Record<string, number[][][]> {
 		/* The amount to change each block's location upon rotation (90, -180, -90, and 0 resp.)
 		 * Note: all columns should add up to 0
 		 */
